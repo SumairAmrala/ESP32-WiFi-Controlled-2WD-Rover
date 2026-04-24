@@ -172,4 +172,4 @@ OLED_driver       → SSD1306 display abstraction
 - Add onboard camera (ESP32-CAM) for FPV view
 
 ## Notes
-First complete robotics system — untethered wireless rover with separated logic and motor power, live battery monitoring, and multi-protocol communication (WiFi, UART, I2C) across two microcontrollers. Built approximately two weeks after starting electronics from scratch.
+First complete robotics system. Untethered wireless rover with separated logic and motor power, live battery monitoring, and multi-protocol communication (WiFi, UART, I2C) across two microcontrollers. Built approximately two weeks after starting electronics from scratch.
