@@ -4,9 +4,23 @@ A wireless two-wheel drive rover controlled over WiFi via a web browser interfac
 
 First real robotics system: untethered, wireless, and fully modular.
 
+## Changelog
+
+### v1.1
+- Added bidirectional UART telemetry: Arduino now sends battery voltage, battery percent, and current gear state to ESP32
+- ESP32 web interface displays live rover telemetry with 1 second auto-refresh
+- WiFi credentials moved to `secrets.h` (not tracked by git)
+- Fixed `Serial1.write()` replacing `Serial1.println()` for cleaner single-byte command transmission
+
+### v1.0
+- Initial release: WiFi forward/reverse/stop control via browser
+- OLED display showing gear and battery state
+- Separated logic and motor power
+
 ## Features
 - WiFi HTTP server on ESP32-S3 for wireless browser-based control
-- UART communication between ESP32-S3 and Arduino Uno
+- Bidirectional UART communication between ESP32-S3 and Arduino Uno
+- Live telemetry streaming: battery voltage, percent, and gear sent from Arduino to ESP32
 - I2C OLED display showing drive mode and live battery voltage and percentage
 - Dual DC motor control via TB6612FNG H-bridge driver
 - Real-time battery voltage monitoring using ADC averaging and voltage divider
@@ -33,9 +47,9 @@ Browser (phone/PC)
        ▼
   ESP32-S3
   WiFi HTTP Server
-       │
-       │ UART Serial (TX → Arduino pin 12)
-       ▼
+       │                        ▲
+       │ UART TX (command)      │ UART RX (telemetry)
+       ▼                        │
   Arduino Uno
   App Logic + Motor Control
        │                    │
@@ -48,8 +62,22 @@ Motor A  Motor B
 
 ## Communication Protocols Used
 - **WiFi HTTP**: ESP32-S3 hosts a TCP server on port 80. Browser sends GET requests to `/F`, `/R`, or `/S`. ESP32 parses the request line and sends a single character command over UART.
-- **UART**: Single-byte commands (`F`, `R`, `S`) sent from ESP32-S3 TX to Arduino via SoftwareSerial on pins 11/12.
+- **UART**: Bidirectional. Single-byte commands (`F`, `R`, `S`) sent from ESP32 TX to Arduino. Structured telemetry packets sent from Arduino TX to ESP32 RX every 200ms.
 - **I2C**: OLED display connected to Arduino SDA/SCL via Wire library.
+
+## UART Telemetry Protocol
+Arduino sends structured CSV telemetry to ESP32 every 200ms:
+
+```
+T,<voltage>,<percent>,<gear>
+```
+
+Example:
+```
+T,6.62,88.6,D
+```
+
+ESP32 parses the packet and displays voltage, battery percent, and current gear on the web control page.
 
 ## Drive Modes
 | Command | Mode | Behavior |
@@ -104,9 +132,17 @@ VCC → 5V
 GND → GND
 ```
 
-**ESP32-S3 → Arduino**
+**ESP32-S3 ↔ Arduino UART**
 ```
-ESP32 TX (GPIO17) → Arduino pin 12 (SoftwareSerial RX)
+ESP32 GPIO17 (TX) → Arduino pin 12 (SoftwareSerial RX)
+Commands: ESP32 → Arduino (3.3V signal, Arduino 5V tolerant: no level shift needed)
+
+Arduino pin 11 (SoftwareSerial TX) → voltage divider → ESP32 GPIO16 (RX)
+Telemetry: Arduino → ESP32 (5V signal divided to 3.3V for ESP32 input protection)
+
+Voltage divider: R1 = 10kΩ, R2 = 20kΩ
+Vout = 5V × 20k / (10k + 20k) = 3.33V
+
 Shared GND
 ```
 
