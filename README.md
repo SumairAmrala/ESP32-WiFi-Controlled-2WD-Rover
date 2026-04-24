@@ -4,6 +4,9 @@ A wireless two-wheel drive rover controlled over WiFi via a web browser interfac
 
 First real robotics system: untethered, wireless, and fully modular.
 
+## Demo
+![Rover demo](images/rover_demo.gif)
+
 ## Changelog
 
 ### v1.1
