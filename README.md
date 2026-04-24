@@ -2,7 +2,7 @@
 
 A wireless two-wheel drive rover controlled over WiFi via a web browser interface. Built on a 2WD chassis with an Arduino Uno handling motor control and system logic, and an ESP32-S3 acting as a WiFi access point and HTTP server. Communication between the two microcontrollers uses UART serial. System state and battery information are displayed on an onboard OLED screen.
 
-First real robotics system — untethered, wireless, and fully modular.
+First real robotics system: untethered, wireless, and fully modular.
 
 ## Features
 - WiFi HTTP server on ESP32-S3 for wireless browser-based control
@@ -14,8 +14,8 @@ First real robotics system — untethered, wireless, and fully modular.
 - Modular firmware architecture across dedicated driver files
 
 ## Hardware
-- Arduino Uno — main logic controller
-- ESP32-S3-WROOM-1 N16R8 — WiFi server and wireless interface
+- Arduino Uno: main logic controller
+- ESP32-S3-WROOM-1 N16R8: WiFi server and wireless interface
 - TB6612FNG dual motor driver
 - 2× TT DC gear motors
 - SSD1306 128×64 OLED display (I2C)
@@ -47,9 +47,9 @@ Motor A  Motor B
 ```
 
 ## Communication Protocols Used
-- **WiFi HTTP** — ESP32-S3 hosts a TCP server on port 80. Browser sends GET requests to `/F`, `/R`, or `/S`. ESP32 parses the request line and sends a single character command over UART.
-- **UART** — Single-byte commands (`F`, `R`, `S`) sent from ESP32-S3 TX to Arduino via SoftwareSerial on pins 11/12.
-- **I2C** — OLED display connected to Arduino SDA/SCL via Wire library.
+- **WiFi HTTP**: ESP32-S3 hosts a TCP server on port 80. Browser sends GET requests to `/F`, `/R`, or `/S`. ESP32 parses the request line and sends a single character command over UART.
+- **UART**: Single-byte commands (`F`, `R`, `S`) sent from ESP32-S3 TX to Arduino via SoftwareSerial on pins 11/12.
+- **I2C**: OLED display connected to Arduino SDA/SCL via Wire library.
 
 ## Drive Modes
 | Command | Mode | Behavior |
@@ -93,14 +93,14 @@ GND      → shared ground
 **Motors → TB6612FNG**
 ```
 Motor terminal holes → jumper wire pins bent through and connected to AO1/AO2 and BO1/BO2
-(prototype connection — solder directly to motor tabs for permanent builds)
+(prototype connection: solder directly to motor tabs for permanent builds)
 ```
 
 **OLED → Arduino**
 ```
 SDA → A4
 SCL → A5
-VCC → 3.3V or 5V
+VCC → 5V
 GND → GND
 ```
 
@@ -133,7 +133,7 @@ OLED_driver       → SSD1306 display abstraction
 
 ## Build Photos
 
-### Full rover — top view
+### Full rover: top view
 ![Rover top view](images/rover_top.jpg)
 
 ### Rover on desk
@@ -148,20 +148,20 @@ OLED_driver       → SSD1306 display abstraction
 ### OLED display showing live battery and gear state
 ![OLED display](images/oled.JPG)
 
-### Underside — motors and chassis
+### Underside: motors and chassis
 ![Chassis underside](images/chassis.JPG)
 
 ### Motor wire routing
 ![Motor wiring](images/motor_wires.JPG)
 
-### Motor battery pack — 4× AA Duracell
+### Motor battery pack: 4× AA Duracell
 ![Battery pack](images/battery.JPG)
 
 
 ## Known Limitations
-- **HTTP server blocks during client handling** — `readStringUntil()` blocks the ESP32 loop while reading the HTTP request. Commands cannot be received during this window. An async HTTP server would resolve this.
-- **SoftwareSerial** — software UART emulation on Arduino pins 11/12 can miss bytes under interrupt load. Hardware UART on pins 0/1 would be more reliable but conflicts with USB serial during development.
-- **OLED redraws every loop** — display is cleared and redrawn on every iteration causing minor flicker. Redrawing only on state change would improve this.
+- **HTTP server blocks during client handling**: `readStringUntil()` blocks the ESP32 loop while reading the HTTP request. Commands cannot be received during this window. An async HTTP server would resolve this.
+- **SoftwareSerial**: software UART emulation on Arduino pins 11/12 can miss bytes under interrupt load. Hardware UART on pins 0/1 would be more reliable but conflicts with USB serial during development.
+- **OLED redraws every loop**: display is cleared and redrawn on every iteration causing minor flicker. Redrawing only on state change would improve this.
 
 ## Future Improvements
 - Replace HTTP polling with WebSocket for continuous low-latency control
