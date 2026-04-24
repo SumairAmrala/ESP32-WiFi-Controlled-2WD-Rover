@@ -131,6 +131,33 @@ motor_driver      → TB6612FNG control, DriveMode enum
 OLED_driver       → SSD1306 display abstraction
 ```
 
+## Build Photos
+
+### Full rover — top view
+![Rover top view](images/rover_top.jpg)
+
+### Rover on desk
+![Rover on desk](images/rover_desk.jpg)
+
+### Arduino Uno + ESP32-S3 close-up
+![Controllers](images/controllers.JPG)
+
+### Wiring and TB6612FNG motor driver
+![Wiring](images/wiring.JPG)
+
+### OLED display showing live battery and gear state
+![OLED display](images/oled.JPG)
+
+### Underside — motors and chassis
+![Chassis underside](images/chassis.JPG)
+
+### Motor wire routing
+![Motor wiring](images/motor_wires.JPG)
+
+### Motor battery pack — 4× AA Duracell
+![Battery pack](images/battery.JPG)
+
+
 ## Known Limitations
 - **HTTP server blocks during client handling** — `readStringUntil()` blocks the ESP32 loop while reading the HTTP request. Commands cannot be received during this window. An async HTTP server would resolve this.
 - **SoftwareSerial** — software UART emulation on Arduino pins 11/12 can miss bytes under interrupt load. Hardware UART on pins 0/1 would be more reliable but conflicts with USB serial during development.
