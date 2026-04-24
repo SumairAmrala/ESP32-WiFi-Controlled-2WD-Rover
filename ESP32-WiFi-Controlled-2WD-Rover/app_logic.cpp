@@ -9,11 +9,11 @@
 static unsigned long currentTime = 0;
 static unsigned long lastTime = 0;
 static int systemMode = 0;
-float vBattery = 0;
-float vOut = 0;
-float raw = 0;
-long sum = 0;
-float percent = 0;
+static float vBattery = 0;
+static float vOut = 0;
+static float raw = 0;
+static long sum = 0;
+static float percent = 0;
 SoftwareSerial espSerial(12, 11);
 
 void App_Init(){
@@ -87,6 +87,7 @@ void App_Logic(){
   if (currentTime - lastTime >= 200){
     App_ReadBatteryV();
     App_ReadBatteryPercent();
+    App_SendTelemetry();
     lastTime = currentTime;
   }
   OLED_PrintText("\nBattery (V): ");
@@ -98,4 +99,17 @@ void App_Logic(){
   OLED_Update();
 }
 
+void App_SendTelemetry(){
+  char gearChar = 'P';
+
+  if (systemMode == 1){gearChar = 'D';}
+  else if (systemMode == 2){gearChar = 'R';}
+
+  espSerial.print("T,");
+  espSerial.print(vBattery, 2);
+  espSerial.print(",");
+  espSerial.print(percent, 1);
+  espSerial.print(",");
+  espSerial.println(gearChar);
+}
 //
