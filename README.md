@@ -169,6 +169,9 @@ OLED_driver       → SSD1306 display abstraction
 
 ## Build Photos
 
+### UART level shifter: voltage divider on Arduino TX to ESP32 RX
+![Voltage divider level shifter](images/Arduino_to_ESP32_Voltage_Divider.JPG)
+
 ### Full rover: top view
 ![Rover top view](images/rover_top.jpg)
 
