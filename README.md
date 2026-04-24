@@ -90,6 +90,12 @@ VM       → 4× AA battery pack positive
 GND      → shared ground
 ```
 
+**Motors → TB6612FNG**
+```
+Motor terminal holes → jumper wire pins bent through and connected to AO1/AO2 and BO1/BO2
+(prototype connection — solder directly to motor tabs for permanent builds)
+```
+
 **OLED → Arduino**
 ```
 SDA → A4
