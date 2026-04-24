@@ -5,6 +5,7 @@
 
 void App_Init();
 void App_Logic();
+void App_SendTelemetry();
 
 #endif
 //
