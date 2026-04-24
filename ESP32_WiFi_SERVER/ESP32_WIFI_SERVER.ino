@@ -9,15 +9,20 @@ const char* ssid = "YOUR_WIFI_SSID";
 const char* password = "YOUR_WIFI_PASSWORD";
 
 const int ESP32_TX_TO_ARDUINO = 17;
+const int ESP32_RX_FROM_ARDUINO = 16;
 
 WiFiServer server(80);
 
 char command = 'S';
 
+float roverBatteryV = 0;
+float roverBatteryPercent = 0;
+char roverGear = 'P';
 
 void setup() {
   Serial.begin(115200);
-  Serial1.begin(9600, SERIAL_8N1, -1, ESP32_TX_TO_ARDUINO);
+  Serial1.begin(9600, SERIAL_8N1, ESP32_RX_FROM_ARDUINO, ESP32_TX_TO_ARDUINO);
+  Serial1.setTimeout(10);
   delay(1000);
 
   Serial.println("Connecting to WiFi...");
@@ -39,6 +44,7 @@ void setup() {
 }
 
 void loop() {
+  readArduinoTelemetry();
   WiFiClient client = server.available();
 
   if (!client) {
@@ -81,11 +87,30 @@ void loop() {
 
   client.println("<html>");
   client.println("<body>");
+
+  client.println("<head>");
+  client.println("<meta http-equiv='refresh' content='1'>");
+  client.println("</head>");
+
   client.println("<h1>ESP32 Rover Control</h1>");
 
-  client.print("<p>Current command: ");
+  client.print("<p>Command: ");
   client.print(command);
   client.println("</p>");
+
+  client.print("<p>Gear: ");
+  client.print(roverGear);
+  client.println("</p>");
+
+  client.print("<p>Battery Voltage: ");
+  client.print(roverBatteryV, 2);
+  client.println(" V</p>");
+
+  client.print("<p>Battery Percent: ");
+  client.print(roverBatteryPercent, 1);
+  client.println(" %</p>");
+
+  client.println("<br>");
 
   client.println("<a href='/F'>Forward</a><br>");
   client.println("<a href='/R'>Reverse</a><br>");
@@ -99,4 +124,27 @@ void loop() {
 
   Serial.println("Client disconnected");
 
+}
+
+void readArduinoTelemetry(){
+  if (Serial1.available()){
+    String line = Serial1.readStringUntil('\n');
+    line.trim();
+
+    if (line.startsWith("T,")){
+      int firstComma = line.indexOf(',');
+      int secondComma = line.indexOf(',', firstComma + 1);
+      int thirdComma = line.indexOf(',', secondComma + 1);
+
+      String voltageText = line.substring(firstComma + 1, secondComma);
+      String percentText = line.substring(secondComma + 1, thirdComma);
+      String gearText = line.substring(thirdComma + 1);
+
+      roverBatteryV = voltageText.toFloat();
+      roverBatteryPercent = percentText.toFloat();
+      roverGear = gearText.charAt(0);
+    }
+    Serial.print("Telemetry received: ");
+    Serial.println(line);
+  }
 }
