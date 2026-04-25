@@ -1,6 +1,6 @@
 # ESP32 WiFi-Controlled 2WD Rover
 
-A wireless two-wheel drive rover controlled over WiFi via a web browser interface. Built on a 2WD chassis with an Arduino Uno handling motor control and system logic, and an ESP32-S3 acting as a WiFi access point and HTTP server. Communication between the two microcontrollers uses UART serial. System state and battery information are displayed on an onboard OLED screen.
+A wireless two-wheel drive rover controlled over WiFi via a web browser interface. Built on a 2WD chassis with an Arduino Uno handling motor control and system logic, while an ESP32-S3 connects to a local WiFi network and hosts an HTTP server. Communication between the two microcontrollers uses UART serial. System state and battery information are displayed on an onboard OLED screen.
 
 First real robotics system: untethered, wireless, and fully modular.
 
